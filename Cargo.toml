@@ -1,0 +1,9 @@
+[package]
+name = "glium_wrapper"
+version = "0.1.0"
+authors = ["g2_xpf <nameko.jack@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+glium = "0.22.0"
+image = "*"
