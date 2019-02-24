@@ -1,5 +1,5 @@
 use crate::types;
-use glium::{vertex, Surface};
+use glium::vertex;
 
 pub trait ShapeFactory<'a, U, V>: ShapeFactoryInfo<V>
 where
@@ -7,7 +7,6 @@ where
 {
     fn new<'b>(display: &'b glium::Display, draw_parameters: glium::DrawParameters<'a>) -> Self;
     fn spawn(&mut self, value: U);
-    fn draw<T: Surface>(&self, surface: &mut T);
 }
 
 pub trait ShapeFactoryInfo<V: vertex::Vertex> {

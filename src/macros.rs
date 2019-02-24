@@ -10,14 +10,13 @@ macro_rules! texture {
         let image_dimensions = image.dimensions();
         let image =
             glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-
         glium::texture::Texture2d::new($display, image).unwrap()
     }};
 }
 
 #[macro_export]
 macro_rules! implement_shape_factory {
-    ( $factory_name:ident ; $vertex:ident, $( $vid:ident ),+ ; $uniform:ty, $( $uid:ident ),+ ) => {
+    ( $factory_name:ident ; $($guid:ident: $type:ty),*; $vertex:ident, $( $vid:ident ),+ ; $uniform:ty, $( $uid:ident ),+ $(; $flag:ident )? ) => {
         glium::implement_vertex!($vertex, $( $vid ),+);
 
         pub struct $factory_name<'a> {
@@ -57,9 +56,20 @@ macro_rules! implement_shape_factory {
                 self.uniform.push(value);
             }
 
-            fn draw<T>(&self, surface: &mut T) where T: glium::Surface {
+        }
+
+        impl<'a> $factory_name<'a> {
+            pub fn draw<T>(&self, surface: &mut T, $($guid: $type),*) where T: glium::Surface {
                 for s in self.uniform.iter() {
+                    $(
+                        if s.$flag {
+                            continue;
+                        }
+                    )?
                     surface.draw(&self.vertex_buffer, &self.index_buffer, &self.program, &uniform!{
+                        $(
+                            $guid: $guid,
+                        )*
                         $(
                             $uid: s.$uid,
                         )+
